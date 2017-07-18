@@ -59,30 +59,6 @@ public class MarketingLVMSQLGenerator extends SQLGeneratorBase implements SQLGen
         this.writeFilePath = writeFilePath;
     }
 
-    public void generateSQLInsertsToFile() throws Exception {
-
-        /*retrieveTierCodeTable();
-        retrieveMarketTable();
-        retrieveAccountTypeCodeTable();
-
-        PrintWriter writer = new PrintWriter(writeFilePath, "UTF-8");
-
-        FileReader fileReader = new FileReader(new File(readFilePath));
-
-        BufferedReader br = new BufferedReader(fileReader);
-
-        String line = null;
-
-        writer.println(insertStatement);
-
-        while ((line = br.readLine()) != null) {
-            String generatedLine = generateInsertLine(line);
-            System.out.println(generatedLine);
-            writer.println(generatedLine);
-        }*/
-    }
-
-
     private Integer getInt(String s) throws ParseException {
         return isInvalid(s) ? null : nf.parse(s.trim()).intValue();
     }

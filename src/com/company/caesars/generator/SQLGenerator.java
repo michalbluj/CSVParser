@@ -5,7 +5,6 @@ package com.company.caesars.generator;
  */
 public interface SQLGenerator {
 
-    public void generateSQLInsertsToFile() throws Exception;
     public void insertRecordsToDatabase() throws Exception;
 
 }

@@ -32,7 +32,7 @@ public class ContactSQLGenerator extends SQLGeneratorBase implements SQLGenerato
 
     private static final String SEPARATOR = ",";
 
-    private String readFilePath = "C://Users//Michal Bluj//Downloads//FullGuestFile/guest-010-000.csv";
+    private String readFilePath = "C://Users//Michal Bluj//Downloads//FullGuestFile/guest-010-001.csv";
     private String writeFilePath = "C://Users//Michal Bluj/Desktop//migration scripts/contacts insert.txt";
     private String insertStatement = "INSERT INTO salesforce.contact (winet_id__c,home_property__c,dominant_property__c,lastname,firstname,birthdate,address_preferences__c,mail_flag__c,account_type__c,c_sec_cd__c,c_prev_dom_cd__c,c_middle_init__c,c_title__c,c_suffix__c,c_quality_cd__c,c_phonetic_last__c,c_phonetic_first__c,d_acct_type_as_of__c,C_AGE_19_PLUS__c,C_AGE_21_PLUS__c,C_AGE_18_PLUS__c,c_ucl_supp_flag__c,c_uci_supp_flag__c,c_tdc_supp_flag__c) VALUES";
 
@@ -51,8 +51,6 @@ public class ContactSQLGenerator extends SQLGeneratorBase implements SQLGenerato
 
     private String generateInsertLine(String line) {
         return "";
-    }
-    public void generateSQLInsertsToFile() throws Exception {
     }
 
     private void loadReferences(){

@@ -25,10 +25,6 @@ public class ContactGSTAssociationSQLGenerator  extends SQLGeneratorBase impleme
 
     private static final String SEPARATOR = ",";
 
-    public void generateSQLInsertsToFile() throws Exception {
-
-    }
-
     public void insertRecordsToDatabase() throws Exception{
 
         retrieveAssociateionReasonTable();

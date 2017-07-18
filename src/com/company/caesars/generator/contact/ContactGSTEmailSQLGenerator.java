@@ -26,10 +26,6 @@ public class ContactGSTEmailSQLGenerator extends SQLGeneratorBase implements SQL
 
     private static final String SEPARATOR = ",";
 
-    public void generateSQLInsertsToFile() throws Exception {
-
-    }
-
     public void insertRecordsToDatabase() throws Exception{
 
         retrieveTierCodeTable();

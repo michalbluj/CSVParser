@@ -28,12 +28,7 @@ public class ContactGSTrcBalanceSQLGenerator  extends SQLGeneratorBase implement
 
     private static final String SEPARATOR = ",";
 
-
     Map<Integer,Connection> conPool = new HashMap<Integer,Connection>();
-
-    public void generateSQLInsertsToFile() throws Exception {
-
-    }
 
     public void insertRecordsToDatabase() throws Exception{
 

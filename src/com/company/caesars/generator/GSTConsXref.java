@@ -23,10 +23,6 @@ public class GSTConsXref extends SQLGeneratorBase implements SQLGenerator {
 
     private static final String SEPARATOR = ",";
 
-    public void generateSQLInsertsToFile() throws Exception {
-
-    }
-
     public void insertRecordsToDatabase() throws Exception {
 
         retrievePropertyTable();

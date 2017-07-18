@@ -265,32 +265,6 @@ public class MarketingCampaignsSQLGenerator extends SQLGeneratorBase implements 
         this.writeFilePath = writeFilePath;
     }
 
-    public void generateSQLInsertsToFile() throws Exception{
-
-        /*retrieveCampaignCodeTable();
-        retrieveCampaignTypeTable();
-        retrievePropertyTable();
-        retrieveTierCodeTable();
-        retrieveMarketTable();
-        retrieveAccountTypeCodeTable();
-
-        PrintWriter writer = new PrintWriter(writeFilePath, "UTF-8");
-
-        FileReader fileReader = new FileReader(new File(readFilePath));
-
-        BufferedReader br = new BufferedReader(fileReader);
-
-        String line = null;
-
-        writer.println(insertStatement);
-
-        while ((line = br.readLine()) != null) {
-            String generatedLine = generateInsertLine(line);
-            System.out.println(generatedLine);
-            writer.println(generatedLine);
-        }*/
-    }
-
     public void insertRecordsToDatabase() throws Exception{
 
         CSVFormat csvFileFormat = CSVFormat.DEFAULT.withHeader(FILE_HEADER_MAPPING);

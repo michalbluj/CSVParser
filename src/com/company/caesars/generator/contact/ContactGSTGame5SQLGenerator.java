@@ -25,10 +25,6 @@ public class ContactGSTGame5SQLGenerator extends SQLGeneratorBase implements SQL
 
     private static final String SEPARATOR = ",";
 
-    public void generateSQLInsertsToFile() throws Exception {
-
-    }
-
     public void insertRecordsToDatabase() throws Exception{
 
         retrieveTierCodeTable();

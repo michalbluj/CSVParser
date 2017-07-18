@@ -27,10 +27,6 @@ public class  PropertyDescriptionSQLGenerator  extends SQLGeneratorBase implemen
 
     Map<Integer, Connection> conPool = new HashMap<Integer, Connection>();
 
-    public void generateSQLInsertsToFile() throws Exception {
-
-    }
-
     public void insertRecordsToDatabase() throws Exception {
 
         Integer numberOfWorkers = 10;

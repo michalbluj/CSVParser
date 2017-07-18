@@ -26,10 +26,6 @@ public class GSTInterestSQLGenerator extends SQLGeneratorBase implements SQLGene
 
     public ObjectMapper mapper = new ObjectMapper();
 
-    public void generateSQLInsertsToFile() throws Exception {
-
-    }
-
     public void insertRecordsToDatabase() throws Exception {
 
         CSVFormat csvFileFormat = CSVFormat.DEFAULT.withHeader(FILE_HEADER_MAPPING);

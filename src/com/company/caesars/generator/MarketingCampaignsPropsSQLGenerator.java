@@ -107,8 +107,8 @@ public class MarketingCampaignsPropsSQLGenerator extends SQLGeneratorBase implem
         return "NULL".equals(s) || "?".equals(s) || "empty".equals(s);
     }
 
-    public void generateSQLInsertsToFile() throws Exception {
-        long start = System.currentTimeMillis();
+    public void insertRecordsToDatabase() throws Exception {
+    	long start = System.currentTimeMillis();
         retrieveCampaignCodeTable();
         retrieveCampaignTypeTable();
         retrievePropertyTable();
@@ -352,11 +352,6 @@ public class MarketingCampaignsPropsSQLGenerator extends SQLGeneratorBase implem
         connection.close();
 
         System.err.println("Done in: " + (System.currentTimeMillis() - start) / 100);
-
-    }
-
-    public void insertRecordsToDatabase() throws Exception {
-
     }
 
     /*

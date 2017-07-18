@@ -25,10 +25,6 @@ public class ContactGSTTierSQLGenerator extends SQLGeneratorBase implements SQLG
 
     private static final String SEPARATOR = ",";
 
-    public void generateSQLInsertsToFile() throws Exception {
-
-    }
-
     public void insertRecordsToDatabase() throws Exception{
 
         retrieveTierCodeTable();

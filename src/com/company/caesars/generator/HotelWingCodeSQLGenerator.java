@@ -23,10 +23,6 @@ public class HotelWingCodeSQLGenerator extends SQLGeneratorBase implements SQLGe
 
     private static final String SEPARATOR = ",";
 
-    public void generateSQLInsertsToFile() throws Exception {
-
-    }
-
     public void insertRecordsToDatabase() throws Exception {
 
         retrievePropertyTable();

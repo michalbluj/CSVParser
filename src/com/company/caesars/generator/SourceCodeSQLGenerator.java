@@ -23,10 +23,6 @@ public class SourceCodeSQLGenerator extends SQLGeneratorBase implements SQLGener
 
     private static final String SEPARATOR = ",";
 
-    public void generateSQLInsertsToFile() throws Exception {
-
-    }
-
     public void insertRecordsToDatabase() throws Exception {
 
         retrievePropertyTable();
