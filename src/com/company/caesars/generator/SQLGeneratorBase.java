@@ -41,7 +41,7 @@ public class SQLGeneratorBase {
 			Connection con = getConnection();
 			String statement = "INSERT INTO public.applogs(level,msg,meta) VALUES ";
 			for(AppLog aLog : errorlogs){
-				statement += "'error','"+aLog.message+"','"+aLog.record+"'),";
+				statement += "('error','"+aLog.message+"','"+aLog.record+"'),";
 			}
 			statement = statement.substring(0,statement.length()-1);
 			try {
