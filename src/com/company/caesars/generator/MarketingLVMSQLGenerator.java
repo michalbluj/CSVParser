@@ -89,7 +89,7 @@ public class MarketingLVMSQLGenerator extends SQLGeneratorBase implements SQLGen
     public void insertRecordsToDatabase() throws Exception {
         long start = System.currentTimeMillis();
         retrieveTierCodeTable();
-        //retrieveMarketTable();
+        retrieveMarketTable();
         retrieveAccountTypeCodeTable();
 
 

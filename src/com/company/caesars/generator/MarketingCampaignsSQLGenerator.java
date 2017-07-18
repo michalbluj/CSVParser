@@ -273,7 +273,7 @@ public class MarketingCampaignsSQLGenerator extends SQLGeneratorBase implements 
         retrieveCampaignTypeTable();
         retrievePropertyTable();
         retrieveTierCodeTable();
-        //retrieveMarketTable();
+        retrieveMarketTable();
         retrieveAccountTypeCodeTable();
         //retrieveContactTable();
 
