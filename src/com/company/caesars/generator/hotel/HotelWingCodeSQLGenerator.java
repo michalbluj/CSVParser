@@ -1,5 +1,7 @@
-package com.company.caesars.generator;
+package com.company.caesars.generator.hotel;
 
+import com.company.caesars.generator.SQLGenerator;
+import com.company.caesars.generator.SQLGeneratorBase;
 import com.company.caesars.generator.concurrent.ConcurrentInsert;
 import com.company.caesars.generator.concurrent.SQLInsertExecutor;
 import org.apache.commons.csv.CSVFormat;
@@ -15,11 +17,11 @@ import java.util.concurrent.Executor;
 /**
  * Created by Michal Bluj on 2017-07-11.
  */
-public class HotelActStatusCodeSQLGenerator extends SQLGeneratorBase implements SQLGenerator {
+public class HotelWingCodeSQLGenerator extends SQLGeneratorBase implements SQLGenerator {
 
-    private String readFilePath = "C://Users//Michal Bluj//Desktop//US1334/hotel_act_status_code.csv";
+    private String readFilePath = "C://Users//Michal Bluj//Desktop//US1334/hotel_wing_codes.csv";
 
-    private static final String[] FILE_HEADER_MAPPING = {"c_activity_status","c_prop_cd","d_start_dt","d_end_dt","c_activity_desc","c_quality_cd","d_timestamp"};
+    private static final String[] FILE_HEADER_MAPPING = {"c_wing_cd","c_prop_cd","d_start_dt","d_end_dt","c_wing_desc","c_quality_cd","d_timestamp"};
 
     private static final String SEPARATOR = ",";
 
@@ -59,13 +61,13 @@ public class HotelActStatusCodeSQLGenerator extends SQLGeneratorBase implements 
     }
 
     private String generateInsertLine(CSVRecord record) {
-        return "Insert into caesars.hotel_act_status_code (c_activity_status,c_prop_cd,c_prop_cd_fk,d_start_dt,d_end_dt,c_activity_desc,c_quality_cd,d_timestamp) VALUES (" +
-                addStringValue(record.get("c_activity_status")) + SEPARATOR +
+        return "Insert into caesars.hotel_wing_code (c_wing_cd,c_prop_cd,c_prop_cd_fk,d_start_dt,d_end_dt,c_wing_desc,c_quality_cd,d_timestamp) VALUES (" +
+                addStringValue(record.get("c_wing_cd")) + SEPARATOR +
                 addStringValue(record.get("c_prop_cd")) + SEPARATOR +
                 addStringValue(propertyCodeKeyMap.get(record.get("c_prop_cd"))) + SEPARATOR +
                 addDateValue(record.get("d_start_dt")) + SEPARATOR +
                 addDateValue(record.get("d_end_dt")) + SEPARATOR +
-                addStringValue(record.get("c_activity_desc")) + SEPARATOR +
+                addStringValue(record.get("c_wing_desc")) + SEPARATOR +
                 addStringValue(record.get("c_quality_cd")) + SEPARATOR +
                 addDateValue(record.get("d_timestamp")) +
                 ");";
