@@ -151,6 +151,12 @@ public class SQLGeneratorBase {
                     "jdbc:postgresql://ec2-34-227-214-243.compute-1.amazonaws.com/dau03qomhvel67?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
                     "uahfh532bp67fe",
                     "p7c293c039febd914d3994d2ffc857e96a2718bdc490359c850e1db839ea801e9");*/
+            
+         // Demo1
+            /*connection = DriverManager.getConnection(
+                    "jdbc:postgresql://ec2-34-231-57-138.compute-1.amazonaws.com/d2q8kv12a8nhoj?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
+                    "u4b4taf81tli2p",
+                    "p7001bc07336c386ec90dc2be72046a4587343c402c8f60db7ee743a1e533526e");*/
 
             System.out.println("Connection established !");
         } catch (SQLException e) {

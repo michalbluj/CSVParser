@@ -50,6 +50,8 @@ public class SourceCodeSQLGenerator extends SQLGeneratorBase implements SQLGener
             counter++;
         }
 
+        csvFileParser.close();
+        
         Executor executor = new SQLInsertExecutor();
 
         for (Integer key : statements.keySet()) {

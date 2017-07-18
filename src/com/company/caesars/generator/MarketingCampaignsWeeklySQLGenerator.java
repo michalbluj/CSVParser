@@ -49,7 +49,7 @@ public class MarketingCampaignsWeeklySQLGenerator extends SQLGeneratorBase imple
         retrieveCampaignTypeTable();
         retrievePropertyTable();
         retrieveTierCodeTable();
-        //retrieveMarketTable();
+        retrieveMarketTable();
         retrieveAccountTypeCodeTable();
 
         FileReader fileReader = new FileReader(readFilePath);
