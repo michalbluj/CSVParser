@@ -1,5 +1,7 @@
-package com.company.caesars.generator;
+package com.company.caesars.generator.shelf;
 
+import com.company.caesars.generator.SQLGenerator;
+import com.company.caesars.generator.SQLGeneratorBase;
 import com.company.caesars.generator.concurrent.ConcurrentInsert;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;

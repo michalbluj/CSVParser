@@ -1,7 +1,10 @@
-package com.company.caesars.generator;
+package com.company.caesars.generator.shelf;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
+
+import com.company.caesars.generator.SQLGenerator;
+import com.company.caesars.generator.SQLGeneratorBase;
 
 import java.io.BufferedReader;
 import java.io.File;
