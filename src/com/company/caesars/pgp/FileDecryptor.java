@@ -20,6 +20,7 @@ public class FileDecryptor {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		out.close();
+		out.close();   
+		
 	}
 }
