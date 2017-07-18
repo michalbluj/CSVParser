@@ -10,9 +10,9 @@ public class FileDecryptor {
 
 	public static void main(String[] args) throws IOException {
 		
-		InputStream in = new FileInputStream("test_file3.txt.pgp");
-		OutputStream out = new FileOutputStream("test_file3.txt");
-		InputStream keyIn = new FileInputStream("private.asc");
+		InputStream in = new FileInputStream("data/sample/test_file3.txt.pgp");
+		OutputStream out = new FileOutputStream("data/sample/test_file3a.txt");
+		InputStream keyIn = new FileInputStream("data/sample/private.asc");
 		char[] password = "Ri0Vegas!".toCharArray();	
 		
 		try {
@@ -22,5 +22,6 @@ public class FileDecryptor {
 		}
 		out.close();   
 		
+		System.out.println("FileDecryptor completed.");
 	}
 }
