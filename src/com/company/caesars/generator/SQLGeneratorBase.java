@@ -1,9 +1,16 @@
 package com.company.caesars.generator;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+
+import com.company.caesars.generator.util.AppLog;
 
 /**
  * Created by Michal Bluj on 2017-06-22.
@@ -22,7 +29,32 @@ public class SQLGeneratorBase {
     protected final Map<String,String> associationReasonMap = new HashMap();
     protected final Map<String,String> mailcodeMap = new HashMap();
     protected final Map<String,String> sourceCodesMap = new HashMap<>();
+    
+    protected List<AppLog> errorlogs = new ArrayList<AppLog>();
 
+    protected void addToErrorLog(String relatedRecord,String errorDescription){
+    	errorlogs.add(new AppLog(relatedRecord,errorDescription));
+    }
+    
+    protected void pushLogsToDB(){
+    	if(!errorlogs.isEmpty()){
+			Connection con = getConnection();
+			String statement = "INSERT INTO public.applogs(level,msg,meta) VALUES ";
+			for(AppLog aLog : errorlogs){
+				statement += "'error','"+aLog.message+"','"+aLog.record+"'),";
+			}
+			statement = statement.substring(0,statement.length()-1);
+			try {
+		        Statement st = con.createStatement();
+		        st.executeUpdate(statement);
+		        st.close();
+		    }catch(SQLException e){
+		        e.printStackTrace();
+		        return;
+		    }
+    	}
+    }
+    
     protected String addNumericValue(String element){
         if(element == null) return "NULL";
         return element.equals("NULL") || element.equals("?") || element.equals("empty") ? "NULL" :  element.replaceAll(",", "").trim();

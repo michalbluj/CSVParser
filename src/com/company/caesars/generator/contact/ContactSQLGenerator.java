@@ -32,7 +32,7 @@ public class ContactSQLGenerator extends SQLGeneratorBase implements SQLGenerato
 
     private static final String SEPARATOR = ",";
 
-    private String readFilePath = "C://Users//Michal Bluj//Downloads//FullGuestFile/guest-007-001.csv";
+    private String readFilePath = "C://Users//Michal Bluj//Downloads//FullGuestFile/guest-009-000.csv";
     private String writeFilePath = "C://Users//Michal Bluj/Desktop//migration scripts/contacts insert.txt";
     private String insertStatement = "INSERT INTO salesforce.contact (winet_id__c,home_property__c,dominant_property__c,lastname,firstname,birthdate,address_preferences__c,mail_flag__c,account_type__c,c_sec_cd__c,c_prev_dom_cd__c,c_middle_init__c,c_title__c,c_suffix__c,c_quality_cd__c,c_phonetic_last__c,c_phonetic_first__c,d_acct_type_as_of__c,C_AGE_19_PLUS__c,C_AGE_21_PLUS__c,C_AGE_18_PLUS__c,c_ucl_supp_flag__c,c_uci_supp_flag__c,c_tdc_supp_flag__c) VALUES";
 
@@ -55,16 +55,22 @@ public class ContactSQLGenerator extends SQLGeneratorBase implements SQLGenerato
     public void generateSQLInsertsToFile() throws Exception {
     }
 
-    public void insertRecordsToDatabase() throws Exception{
-
-        CSVFormat csvFileFormat = CSVFormat.DEFAULT.withHeader(FILE_HEADER_MAPPING);
-
+    private void loadReferences(){
         retrieveCampaignCodeTable();
         retrieveCampaignTypeTable();
         retrievePropertyTable();
         retrieveTierCodeTable();
         retrieveMarketTable();
         retrieveAccountTypeCodeTable();
+    }
+    
+    public void insertRecordsToDatabase() throws Exception{
+
+    	System.out.println("Parsing " + readFilePath);
+    	
+    	loadReferences();
+    	
+        CSVFormat csvFileFormat = CSVFormat.DEFAULT.withHeader(FILE_HEADER_MAPPING);
 
         FileReader fileReader = new FileReader(readFilePath);
 
@@ -90,12 +96,20 @@ public class ContactSQLGenerator extends SQLGeneratorBase implements SQLGenerato
 
         Integer counter = 0;
         for (int i = 1; i < csvRecords.size(); i++) {
-                CSVRecord record = csvRecords.get(i);
-                String generatedLine = generateInsertLine(record); // line coresponding to record row
-                statements.put(counter % threadPool, statements.get(counter % threadPool) + generatedLine); // attaching line to thread
-                System.out.println(counter);
-                counter++;
+        	CSVRecord record = csvRecords.get(i);
+            if(record.size() == 26){
+            	String generatedLine = generateInsertLine(record); // line coresponding to record row
+	            statements.put(counter % threadPool, statements.get(counter % threadPool) + generatedLine); // attaching line to thread
+	            System.out.println(counter);
+	            counter++;
+            } else {
+            	addToErrorLog(record.toString(),"To many collumns");
+            }
         }
+        
+        pushLogsToDB();
+        
+        csvFileParser.close();
 
         for (Integer key : statements.keySet()) {
             String stmt = insertStatement + statements.get(key);
@@ -107,40 +121,31 @@ public class ContactSQLGenerator extends SQLGeneratorBase implements SQLGenerato
     }
 
     private String generateInsertLine(CSVRecord record) {
-        try {
-            if (record.get("c_mail_flag") != null || record.get("c_mail_flag").length() == 1) {
-                return " (" +
-                        addNumericValue(record.get("i_dmid")) + SEPARATOR
-                        + addStringValue(propertyCodeKeyMap.get(record.get("c_home_prop_cd"))) + SEPARATOR
-                        + addStringValue(propertyCodeKeyMap.get(record.get("c_dom_cd"))) + SEPARATOR
-                        + addStringValue(record.get("c_last_name")) + SEPARATOR
-                        + addStringValue(record.get("c_first_name")) + SEPARATOR
-                        + addDateValue(record.get("d_dob")) + SEPARATOR
-                        + addStringValue(record.get("c_addr_pref")) + SEPARATOR
-                        + addStringValue(record.get("c_mail_flag")) + SEPARATOR
-                        + addStringValue(accountTypeCodeKeyMap.get(record.get("c_acct_type_cd"))) + SEPARATOR
-                        + addStringValue(propertyCodeKeyMap.get(record.get("c_sec_cd"))) + SEPARATOR
-                        + addStringValue(propertyCodeKeyMap.get(record.get("c_prev_dom_cd"))) + SEPARATOR
-                        + addStringValue(record.get("c_middle_init")) + SEPARATOR
-                        + addStringValue(record.get("c_title")) + SEPARATOR
-                        + addStringValue(record.get("c_suffix")) + SEPARATOR
-                        + addStringValue(record.get("c_quality_cd")) + SEPARATOR
-                        + addStringValue(record.get("c_phonetic_last")) + SEPARATOR
-                        + addStringValue(record.get("c_phonetic_first")) + SEPARATOR
-                        + addDateValue(record.get("d_acct_type_as_of")) + SEPARATOR
-                        + addStringValue(record.get("C_AGE_19_PLUS")) + SEPARATOR
-                        + addStringValue(record.get("C_AGE_21_PLUS")) + SEPARATOR
-                        + addStringValue(record.get("C_AGE_18_PLUS")) + SEPARATOR
-                        + addStringValue(record.get("c_ucl_supp_flag")) + SEPARATOR
-                        + addStringValue(record.get("c_uci_supp_flag")) + SEPARATOR
-                        + addStringValue(record.get("c_tdc_supp_flag"))
-                        + "),";
-            } else {
-                return "";
-            }
-        }catch(Exception e){
-            return "";
-        }
+    	return " (" +
+        	addNumericValue(record.get("i_dmid")) + SEPARATOR
+            + addStringValue(propertyCodeKeyMap.get(record.get("c_home_prop_cd"))) + SEPARATOR
+            + addStringValue(propertyCodeKeyMap.get(record.get("c_dom_cd"))) + SEPARATOR
+            + addStringValue(record.get("c_last_name")) + SEPARATOR
+            + addStringValue(record.get("c_first_name")) + SEPARATOR
+            + addDateValue(record.get("d_dob")) + SEPARATOR
+            + addStringValue(record.get("c_addr_pref")) + SEPARATOR
+            + addStringValue(record.get("c_mail_flag")) + SEPARATOR
+            + addStringValue(accountTypeCodeKeyMap.get(record.get("c_acct_type_cd"))) + SEPARATOR
+            + addStringValue(propertyCodeKeyMap.get(record.get("c_sec_cd"))) + SEPARATOR
+            + addStringValue(propertyCodeKeyMap.get(record.get("c_prev_dom_cd"))) + SEPARATOR
+            + addStringValue(record.get("c_middle_init")) + SEPARATOR
+            + addStringValue(record.get("c_title")) + SEPARATOR
+            + addStringValue(record.get("c_suffix")) + SEPARATOR
+            + addStringValue(record.get("c_quality_cd")) + SEPARATOR
+            + addStringValue(record.get("c_phonetic_last")) + SEPARATOR
+            + addStringValue(record.get("c_phonetic_first")) + SEPARATOR
+            + addDateValue(record.get("d_acct_type_as_of")) + SEPARATOR
+            + addStringValue(record.get("C_AGE_19_PLUS")) + SEPARATOR
+            + addStringValue(record.get("C_AGE_21_PLUS")) + SEPARATOR
+            + addStringValue(record.get("C_AGE_18_PLUS")) + SEPARATOR
+            + addStringValue(record.get("c_ucl_supp_flag")) + SEPARATOR
+            + addStringValue(record.get("c_uci_supp_flag")) + SEPARATOR
+            + addStringValue(record.get("c_tdc_supp_flag"))
+            + "),";
     }
-
 }
