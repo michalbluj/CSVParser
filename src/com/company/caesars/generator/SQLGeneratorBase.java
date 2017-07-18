@@ -19,15 +19,15 @@ public class SQLGeneratorBase {
 
     protected Connection connection = getConnection();
 
-    protected final Map<String,String> campaignCodeKeyMap  = new HashMap();
-    protected final Map<String,String> campaignTypeKeyMap  = new HashMap();
-    protected final Map<String,String> propertyCodeKeyMap  = new HashMap();
-    protected final Map<String,String> marketCodeKeyMap = new HashMap();
-    protected final Map<String,String> accountTypeCodeKeyMap = new HashMap();
-    protected final Map<String,String> tierCodeKeyMap = new HashMap();
-    protected final Map<String,String> contactMap = new HashMap();
-    protected final Map<String,String> associationReasonMap = new HashMap();
-    protected final Map<String,String> mailcodeMap = new HashMap();
+    protected final Map<String,String> campaignCodeKeyMap  = new HashMap<String, String>();
+    protected final Map<String,String> campaignTypeKeyMap  = new HashMap<String, String>();
+    protected final Map<String,String> propertyCodeKeyMap  = new HashMap<String, String>();
+    protected final Map<String,String> marketCodeKeyMap = new HashMap<String, String>();
+    protected final Map<String,String> accountTypeCodeKeyMap = new HashMap<String, String>();
+    protected final Map<String,String> tierCodeKeyMap = new HashMap<String, String>();
+    protected final Map<String,String> contactMap = new HashMap<String, String>();
+    protected final Map<String,String> associationReasonMap = new HashMap<String, String>();
+    protected final Map<String,String> mailcodeMap = new HashMap<String, String>();
     protected final Map<String,String> sourceCodesMap = new HashMap<>();
     
     protected List<AppLog> errorlogs = new ArrayList<AppLog>();
@@ -48,6 +48,7 @@ public class SQLGeneratorBase {
 		        Statement st = con.createStatement();
 		        st.executeUpdate(statement);
 		        st.close();
+		        
 		    }catch(SQLException e){
 		        e.printStackTrace();
 		        return;
