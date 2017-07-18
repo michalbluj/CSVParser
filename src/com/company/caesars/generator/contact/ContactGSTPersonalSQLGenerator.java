@@ -1,5 +1,7 @@
-package com.company.caesars.generator;
+package com.company.caesars.generator.contact;
 
+import com.company.caesars.generator.SQLGenerator;
+import com.company.caesars.generator.SQLGeneratorBase;
 import com.company.caesars.generator.concurrent.ConcurrentInsert;
 import com.company.caesars.generator.concurrent.SQLInsertExecutor;
 import org.apache.commons.csv.CSVFormat;
@@ -7,27 +9,21 @@ import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
 import java.io.FileReader;
-import java.sql.Connection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * Created by Michal Bluj on 2017-07-03.
  */
-public class ContactGSTrcBalanceSQLGenerator  extends SQLGeneratorBase implements SQLGenerator {
+public class ContactGSTPersonalSQLGenerator extends SQLGeneratorBase implements SQLGenerator {
 
-    private String readFilePath = "C:/Users/Michal Bluj//Desktop//UCR - Guest data//1to1/gst_rcbalance.csv";
+    private String readFilePath = "C:/Users/Michal Bluj//Desktop//UCR - Guest data//1to1/gst_personal.csv";
 
-    private static final String [] FILE_HEADER_MAPPING = {"i_dmid","f_balance","d_as_of","d_last_earned","d_last_expire	c","quality_cd","d_timestamp"};
+    private static final String [] FILE_HEADER_MAPPING = {"i_dmid","c_gender","i_ssn","c_dl_num","c_dl_state_cd","c_marital_status","d_annivers_dt","c_id_verified","c_quality_cd","d_timestamp"};
 
     private static final String SEPARATOR = ",";
-
-
-    Map<Integer,Connection> conPool = new HashMap<Integer,Connection>();
 
     public void generateSQLInsertsToFile() throws Exception {
 
@@ -35,13 +31,7 @@ public class ContactGSTrcBalanceSQLGenerator  extends SQLGeneratorBase implement
 
     public void insertRecordsToDatabase() throws Exception{
 
-        Integer numberOfWorkers = 10;
-
-        ExecutorService executor = Executors.newFixedThreadPool(numberOfWorkers);
-
-        for(Integer i = 0; i < numberOfWorkers; i++){
-            conPool.put(i,getConnection());
-        }
+        retrieveTierCodeTable();
 
         CSVFormat csvFileFormat = CSVFormat.DEFAULT.withHeader(FILE_HEADER_MAPPING);
 
@@ -51,7 +41,7 @@ public class ContactGSTrcBalanceSQLGenerator  extends SQLGeneratorBase implement
 
         List<CSVRecord> csvRecords = csvFileParser.getRecords();
 
-
+        Integer numberOfWorkers = 100;
 
         Map<Integer,String> statements = new HashMap<Integer,String>();
         for(Integer i = 0; i< numberOfWorkers ;i++){
@@ -66,18 +56,17 @@ public class ContactGSTrcBalanceSQLGenerator  extends SQLGeneratorBase implement
             counter ++;
         }
 
-        //Executor executor = new SQLInsertExecutor();
+        Executor executor = new SQLInsertExecutor();
 
         for(Integer key : statements.keySet()) {
             String stmt = statements.get(key);
-            executor.execute(new ConcurrentInsert(key, stmt, conPool.get(key)));
+            executor.execute(new ConcurrentInsert(key, stmt, connection));
         }
-        executor.shutdown();
     }
 
     private String generateInsertLine(CSVRecord record) {
-        return "Update salesforce.contact SET f_balance__c = " + addStringValue(record.get("f_balance")) +
-                " , d_as_of__c = " + addDateValue(record.get("d_as_of")) +
+        return "Update salesforce.contact SET c_gender__c = " + addStringValue(record.get("c_gender")) +
+                " ,c_marital_status__c = " + addStringValue(record.get("c_marital_status")) +
                 " where winet_id__c = " + addStringValue(record.get("i_dmid")) +";";
     }
 }

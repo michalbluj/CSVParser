@@ -1,5 +1,7 @@
-package com.company.caesars.generator;
+package com.company.caesars.generator.contact;
 
+import com.company.caesars.generator.SQLGenerator;
+import com.company.caesars.generator.SQLGeneratorBase;
 import com.company.caesars.generator.concurrent.ConcurrentInsert;
 import com.company.caesars.generator.concurrent.SQLInsertExecutor;
 import org.apache.commons.csv.CSVFormat;
@@ -7,21 +9,27 @@ import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
 import java.io.FileReader;
+import java.sql.Connection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by Michal Bluj on 2017-07-03.
  */
-public class ContactGSTAssociationSQLGenerator  extends SQLGeneratorBase implements SQLGenerator {
+public class ContactGSTrcBalanceSQLGenerator  extends SQLGeneratorBase implements SQLGenerator {
 
-    private String readFilePath = "C:/Users/Michal Bluj//Desktop//UCR - Guest data//1to1/gst_association.csv";
+    private String readFilePath = "C:/Users/Michal Bluj//Desktop//UCR - Guest data//1to1/gst_rcbalance.csv";
 
-    private static final String [] FILE_HEADER_MAPPING = {"i_primary_dmid","i_secondary_dmid","c_assn_reason","c_req_prop_cd","i_req_dmid","c_req_employee","d_create_dt","c_quality_cd","d_timestamp"};
+    private static final String [] FILE_HEADER_MAPPING = {"i_dmid","f_balance","d_as_of","d_last_earned","d_last_expire	c","quality_cd","d_timestamp"};
 
     private static final String SEPARATOR = ",";
+
+
+    Map<Integer,Connection> conPool = new HashMap<Integer,Connection>();
 
     public void generateSQLInsertsToFile() throws Exception {
 
@@ -29,7 +37,13 @@ public class ContactGSTAssociationSQLGenerator  extends SQLGeneratorBase impleme
 
     public void insertRecordsToDatabase() throws Exception{
 
-        retrieveAssociateionReasonTable();
+        Integer numberOfWorkers = 10;
+
+        ExecutorService executor = Executors.newFixedThreadPool(numberOfWorkers);
+
+        for(Integer i = 0; i < numberOfWorkers; i++){
+            conPool.put(i,getConnection());
+        }
 
         CSVFormat csvFileFormat = CSVFormat.DEFAULT.withHeader(FILE_HEADER_MAPPING);
 
@@ -39,7 +53,7 @@ public class ContactGSTAssociationSQLGenerator  extends SQLGeneratorBase impleme
 
         List<CSVRecord> csvRecords = csvFileParser.getRecords();
 
-        Integer numberOfWorkers = 100;
+
 
         Map<Integer,String> statements = new HashMap<Integer,String>();
         for(Integer i = 0; i< numberOfWorkers ;i++){
@@ -54,19 +68,18 @@ public class ContactGSTAssociationSQLGenerator  extends SQLGeneratorBase impleme
             counter ++;
         }
 
-        Executor executor = new SQLInsertExecutor();
+        //Executor executor = new SQLInsertExecutor();
 
         for(Integer key : statements.keySet()) {
             String stmt = statements.get(key);
-            executor.execute(new ConcurrentInsert(key, stmt, connection));
+            executor.execute(new ConcurrentInsert(key, stmt, conPool.get(key)));
         }
+        executor.shutdown();
     }
 
     private String generateInsertLine(CSVRecord record) {
-        return "Update salesforce.contact SET "+
-                "  c_secondary_dmid__c = " + addStringValue(record.get("i_secondary_dmid")) +
-                " , c_assn_reason__c = " + addStringValue(associationReasonMap.get(record.get("c_assn_reason"))) +
-                " where winet_id__c = " + addStringValue(record.get("i_primary_dmid")) +";";
+        return "Update salesforce.contact SET f_balance__c = " + addStringValue(record.get("f_balance")) +
+                " , d_as_of__c = " + addDateValue(record.get("d_as_of")) +
+                " where winet_id__c = " + addStringValue(record.get("i_dmid")) +";";
     }
 }
-

@@ -1,5 +1,7 @@
-package com.company.caesars.generator;
+package com.company.caesars.generator.contact;
 
+import com.company.caesars.generator.SQLGenerator;
+import com.company.caesars.generator.SQLGeneratorBase;
 import com.company.caesars.generator.concurrent.ConcurrentInsert;
 import com.company.caesars.generator.concurrent.SQLInsertExecutor;
 import org.apache.commons.csv.CSVFormat;
@@ -15,11 +17,11 @@ import java.util.concurrent.Executor;
 /**
  * Created by Michal Bluj on 2017-07-03.
  */
-public class ContactGSTGame5SQLGenerator extends SQLGeneratorBase implements SQLGenerator {
+public class ContactGSTAssociationSQLGenerator  extends SQLGeneratorBase implements SQLGenerator {
 
-    private String readFilePath = "C:/Users/Michal Bluj//Desktop//UCR - Guest data//1to1/guest_game5.csv";
+    private String readFilePath = "C:/Users/Michal Bluj//Desktop//UCR - Guest data//1to1/gst_association.csv";
 
-    private static final String [] FILE_HEADER_MAPPING = {"i_dmid","c_game_type","c_group_1","c_group_2","c_group_3","c_group_4","c_group_5","i_top1_value","i_top5_value","i_total_value","i_groups","i_cards_top","i_cards_total","i_machines","f_denom_pref","i_denom","i_denom_pref","i_denom_total","c_user_flag_1","c_user_flag_2","c_user_flag_3","c_user_flag_4","c_user_flag_5","c_user_flag_6","c_user_flag_7","c_user_flag_8","c_user_flag_9","c_user_flag_10","i_user_score_1","i_user_score_2","i_user_score_3","i_user_score_4","i_user_score_5","i_user_score_6","i_user_score_7","i_user_score_8","i_user_score_9","i_user_score_10","f_user_amt_1","f_user_amt_2","f_user_amt_3","f_user_amt_4","f_user_amt_5","f_user_amt_6","f_user_amt_7","f_user_amt_8","f_user_amt_9","f_user_amt_10"};
+    private static final String [] FILE_HEADER_MAPPING = {"i_primary_dmid","i_secondary_dmid","c_assn_reason","c_req_prop_cd","i_req_dmid","c_req_employee","d_create_dt","c_quality_cd","d_timestamp"};
 
     private static final String SEPARATOR = ",";
 
@@ -29,7 +31,7 @@ public class ContactGSTGame5SQLGenerator extends SQLGeneratorBase implements SQL
 
     public void insertRecordsToDatabase() throws Exception{
 
-        retrieveTierCodeTable();
+        retrieveAssociateionReasonTable();
 
         CSVFormat csvFileFormat = CSVFormat.DEFAULT.withHeader(FILE_HEADER_MAPPING);
 
@@ -64,12 +66,9 @@ public class ContactGSTGame5SQLGenerator extends SQLGeneratorBase implements SQL
 
     private String generateInsertLine(CSVRecord record) {
         return "Update salesforce.contact SET "+
-                " c_game_type__c = " + addStringValue(record.get("c_game_type")) +
-                " , c_group_1__c = " + addStringValue(record.get("c_group_1")) +
-                " , c_group_2__c = " + addStringValue(record.get("c_group_2")) +
-                " , c_group_3__c = " + addStringValue(record.get("c_group_3")) +
-                " , c_group_4__c = " + addStringValue(record.get("c_group_4")) +
-                " , c_group_5__c = " + addStringValue(record.get("c_group_5")) +
-                " where winet_id__c = " + addStringValue(record.get("i_dmid")) +";";
+                "  c_secondary_dmid__c = " + addStringValue(record.get("i_secondary_dmid")) +
+                " , c_assn_reason__c = " + addStringValue(associationReasonMap.get(record.get("c_assn_reason"))) +
+                " where winet_id__c = " + addStringValue(record.get("i_primary_dmid")) +";";
     }
 }
+

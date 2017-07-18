@@ -1,5 +1,7 @@
-package com.company.caesars.generator;
+package com.company.caesars.generator.contact;
 
+import com.company.caesars.generator.SQLGenerator;
+import com.company.caesars.generator.SQLGeneratorBase;
 import com.company.caesars.generator.concurrent.ConcurrentInsert;
 import com.company.caesars.generator.concurrent.SQLInsertExecutor;
 import org.apache.commons.csv.CSVFormat;
@@ -15,11 +17,11 @@ import java.util.concurrent.Executor;
 /**
  * Created by Michal Bluj on 2017-07-03.
  */
-public class ContactGSTPersonalSQLGenerator extends SQLGeneratorBase implements SQLGenerator {
+public class ContactGSTPropMailCodeSQLGenerator extends SQLGeneratorBase implements SQLGenerator {
 
-    private String readFilePath = "C:/Users/Michal Bluj//Desktop//UCR - Guest data//1to1/gst_personal.csv";
+    private String readFilePath = "C:/Users/Michal Bluj//Desktop//UCR - Guest data//1to1/gst_prop_mail_code.csv";
 
-    private static final String [] FILE_HEADER_MAPPING = {"i_dmid","c_gender","i_ssn","c_dl_num","c_dl_state_cd","c_marital_status","d_annivers_dt","c_id_verified","c_quality_cd","d_timestamp"};
+    private static final String [] FILE_HEADER_MAPPING = {"i_dmid","c_prop_mail_cd","c_quality_cd","d_timestamp"};
 
     private static final String SEPARATOR = ",";
 
@@ -29,7 +31,7 @@ public class ContactGSTPersonalSQLGenerator extends SQLGeneratorBase implements 
 
     public void insertRecordsToDatabase() throws Exception{
 
-        retrieveTierCodeTable();
+        retrieveMailCodeTable();
 
         CSVFormat csvFileFormat = CSVFormat.DEFAULT.withHeader(FILE_HEADER_MAPPING);
 
@@ -63,8 +65,7 @@ public class ContactGSTPersonalSQLGenerator extends SQLGeneratorBase implements 
     }
 
     private String generateInsertLine(CSVRecord record) {
-        return "Update salesforce.contact SET c_gender__c = " + addStringValue(record.get("c_gender")) +
-                " ,c_marital_status__c = " + addStringValue(record.get("c_marital_status")) +
+        return "Update salesforce.contact SET  c_prop_mail_cd__c = " + addStringValue(mailcodeMap.get(record.get("c_prop_mail_cd"))) +
                 " where winet_id__c = " + addStringValue(record.get("i_dmid")) +";";
     }
 }

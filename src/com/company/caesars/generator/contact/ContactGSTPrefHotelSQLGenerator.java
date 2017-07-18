@@ -1,5 +1,7 @@
-package com.company.caesars.generator;
+package com.company.caesars.generator.contact;
 
+import com.company.caesars.generator.SQLGenerator;
+import com.company.caesars.generator.SQLGeneratorBase;
 import com.company.caesars.generator.concurrent.ConcurrentInsert;
 import com.company.caesars.generator.concurrent.SQLInsertExecutor;
 import org.apache.commons.csv.CSVFormat;
@@ -15,11 +17,11 @@ import java.util.concurrent.Executor;
 /**
  * Created by Michal Bluj on 2017-07-03.
  */
-public class ContactGSTTierSQLGenerator extends SQLGeneratorBase implements SQLGenerator {
+public class ContactGSTPrefHotelSQLGenerator extends SQLGeneratorBase implements SQLGenerator {
 
-    private String readFilePath = "C:/Users/Michal Bluj//Desktop//UCR - Guest data//1to1/gst_tier.csv";
+    private String readFilePath = "C:/Users/Michal Bluj//Desktop//UCR - Guest data//1to1/gst_pref_hotel.csv";
 
-    private static final String [] FILE_HEADER_MAPPING = {"i_dmid","c_tier_cd","c_prev_tier_cd","d_tier_assign_dt","c_how_assigned","d_expire_dt","c_reason_cd","c_logon","c_logon_prop_cd","d_prev_tier_dt","c_quality_cd","d_timestamp"};
+    private static final String [] FILE_HEADER_MAPPING = {"i_dmid","c_cc_type","c_cc_number","d_cc_expire_dt","c_smoking","c_bed_type","c_room_type","c_spcl_request","c_spcl_instruction","c_companion_id","c_quality_cd","d_timestamp"};
 
     private static final String SEPARATOR = ",";
 
@@ -39,7 +41,7 @@ public class ContactGSTTierSQLGenerator extends SQLGeneratorBase implements SQLG
 
         List<CSVRecord> csvRecords = csvFileParser.getRecords();
 
-        Integer numberOfWorkers = 10;
+        Integer numberOfWorkers = 100;
 
         Map<Integer,String> statements = new HashMap<Integer,String>();
         for(Integer i = 0; i< numberOfWorkers ;i++){
@@ -63,9 +65,9 @@ public class ContactGSTTierSQLGenerator extends SQLGeneratorBase implements SQLG
     }
 
     private String generateInsertLine(CSVRecord record) {
-        return "Update salesforce.contact SET c_tier_cd__c = " + addStringValue(tierCodeKeyMap.get(record.get("c_tier_cd"))) +
-                " , c_prev_tier_cd__c = " + addStringValue(tierCodeKeyMap.get(record.get("c_prev_tier_cd"))) +
-                " , d_tier_assign_dt__c = " + addDateValue(record.get("d_tier_assign_dt")) +
+        return "Update salesforce.contact SET c_smoking__c = " + addBooleanValue(record.get("c_smoking")) +
+                " , c_bed_type__c = " + addStringValue(record.get("c_bed_type")) +
+                " , c_room_type__c = " + addStringValue(record.get("c_room_type")) +
                 " where winet_id__c = " + addStringValue(record.get("i_dmid")) +";";
     }
 }

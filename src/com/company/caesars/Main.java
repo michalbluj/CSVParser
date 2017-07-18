@@ -1,11 +1,7 @@
 package com.company.caesars;
 
-import com.company.caesars.generator.*;
-import com.company.caesars.pgp.Decryptor;
-
-import java.io.*;
-import java.util.Map;
-import java.util.HashMap;
+import com.company.caesars.generator.SQLGenerator;
+import com.company.caesars.generator.contact.ContactSQLGenerator;
 
 public class Main {
 
