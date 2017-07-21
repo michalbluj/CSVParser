@@ -1,27 +1,20 @@
-package com.company.caesars.generator.contact;
+package com.company.caesars.generator.guest;
 
-import com.company.caesars.generator.SQLGenerator;
-import com.company.caesars.generator.SQLGeneratorBase;
-import com.company.caesars.generator.concurrent.ConcurrentInsert;
-import com.company.caesars.generator.concurrent.SQLInsertExecutor;
+import java.io.FileReader;
+import java.sql.Connection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.PrintWriter;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import com.company.caesars.generator.SQLGenerator;
+import com.company.caesars.generator.SQLGeneratorBase;
+import com.company.caesars.generator.concurrent.ConcurrentInsert;
 
 /**
  * Created by Michal Bluj on 2017-06-26.
@@ -32,26 +25,16 @@ public class ContactSQLGenerator extends SQLGeneratorBase implements SQLGenerato
 
     private static final String SEPARATOR = ",";
 
-    private String readFilePath = "C://Users//Michal Bluj//Downloads//FullGuestFile/guest-013-001.csv";
-    //private String readFilePath = "C://Users//Michal Bluj//Desktop//UCR - Guest data/guest.csv";
-    private String writeFilePath = "C://Users//Michal Bluj/Desktop//migration scripts/contacts insert.txt";
+    private String readFilePath = "C://Users//Michal Bluj//Downloads//FullGuestFile/guest2__04.txt";
     private String insertStatement = "INSERT INTO salesforce.contact (winet_id__c,home_property__c,dominant_property__c,lastname,firstname,birthdate,address_preferences__c,mail_flag__c,account_type__c,c_sec_cd__c,c_prev_dom_cd__c,c_middle_init__c,c_title__c,c_suffix__c,c_quality_cd__c,c_phonetic_last__c,c_phonetic_first__c,d_acct_type_as_of__c,C_AGE_19_PLUS__c,C_AGE_21_PLUS__c,C_AGE_18_PLUS__c,c_ucl_supp_flag__c,c_uci_supp_flag__c,c_tdc_supp_flag__c) VALUES";
 
     Map<Integer, Connection> conPool = new HashMap<Integer, Connection>();
 
     public ContactSQLGenerator() {
     }
-
-    public ContactSQLGenerator(String readFilePath) {
-    }
-
-    public ContactSQLGenerator(String readFilePath, String writeFilePath) {
-        this.readFilePath = readFilePath;
-        this.writeFilePath = writeFilePath;
-    }
-
-    private String generateInsertLine(String line) {
-        return "";
+    
+    public ContactSQLGenerator(String file) {
+    	readFilePath = file;
     }
 
     private void loadReferences(){
@@ -65,11 +48,12 @@ public class ContactSQLGenerator extends SQLGeneratorBase implements SQLGenerato
     
     public void insertRecordsToDatabase() throws Exception{
 
+    	Long start = System.currentTimeMillis();
     	System.out.println("Parsing " + readFilePath);
     	
     	loadReferences();
     	
-        CSVFormat csvFileFormat = CSVFormat.DEFAULT.withHeader(FILE_HEADER_MAPPING);
+        CSVFormat csvFileFormat =  CSVFormat.newFormat('|').withHeader(FILE_HEADER_MAPPING);
 
         FileReader fileReader = new FileReader(readFilePath);
 
@@ -77,7 +61,7 @@ public class ContactSQLGenerator extends SQLGeneratorBase implements SQLGenerato
 
         List<CSVRecord> csvRecords = csvFileParser.getRecords();
 
-        Integer connectionPool = 10;
+        Integer connectionPool = 5;
 
         Integer threadPool = 1000;
 
@@ -102,11 +86,11 @@ public class ContactSQLGenerator extends SQLGeneratorBase implements SQLGenerato
 	            System.out.println(counter);
 	            counter++;
             } else {
-            	addToErrorLog(record.get("i_dmid"),"To many collumns");
+            	addToErrorLog(record.get("i_dmid"),"Wrong number of columns");
             }
         }
         
-        pushLogsToDB();
+        //pushLogsToDB();
         
         csvFileParser.close();
 
@@ -116,7 +100,7 @@ public class ContactSQLGenerator extends SQLGeneratorBase implements SQLGenerato
             executor.execute(new ConcurrentInsert(key, stmt, conPool.get(key%connectionPool))); // execute insert using connection from connection pool
         }
         executor.shutdown();
-
+        System.out.println("Time consumed : " + (System.currentTimeMillis() - start));
     }
 
     private String generateInsertLine(CSVRecord record) {
@@ -124,8 +108,8 @@ public class ContactSQLGenerator extends SQLGeneratorBase implements SQLGenerato
         	addNumericValue(record.get("i_dmid")) + SEPARATOR
             + addStringValue(propertyCodeKeyMap.get(record.get("c_home_prop_cd"))) + SEPARATOR
             + addStringValue(propertyCodeKeyMap.get(record.get("c_dom_cd"))) + SEPARATOR
-            + addStringValue(record.get("c_last_name")) + SEPARATOR
-            + addStringValue(record.get("c_first_name")) + SEPARATOR
+            + addStringValue(record.get("c_last_name") == null || record.get("c_last_name").equals("") ? "Missing last name" : record.get("c_last_name")) + SEPARATOR
+            + addStringValue(record.get("c_first_name") == null || record.get("c_first_name").equals("") ? "Missing first name" : record.get("c_first_name")) + SEPARATOR
             + addDateValue(record.get("d_dob")) + SEPARATOR
             + addStringValue(record.get("c_addr_pref")) + SEPARATOR
             + addStringValue(record.get("c_mail_flag")) + SEPARATOR
