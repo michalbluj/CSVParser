@@ -28,7 +28,7 @@ public class  PropertyDescriptionSQLGenerator  extends SQLGeneratorBase implemen
     Map<Integer, Connection> conPool = new HashMap<Integer, Connection>();
 
     public void insertRecordsToDatabase() throws Exception {
-
+    	Long start = System.currentTimeMillis();
         Integer numberOfWorkers = 10;
 
         ExecutorService executor = Executors.newFixedThreadPool(numberOfWorkers);
@@ -63,7 +63,7 @@ public class  PropertyDescriptionSQLGenerator  extends SQLGeneratorBase implemen
 
         for (Integer key : statements.keySet()) {
             String stmt = statements.get(key);
-            executor.execute(new ConcurrentInsert(key, stmt, conPool.get(key)));
+            executor.execute(new ConcurrentInsert(key, stmt, conPool.get(key), start));
         }
         executor.shutdown();
     }

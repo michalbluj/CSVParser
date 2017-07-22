@@ -24,7 +24,7 @@ public class LMSSourceDescSDASQLGenereator extends SQLGeneratorBase implements S
     private static final String SEPARATOR = ",";
 
     public void insertRecordsToDatabase() throws Exception {
-
+    	Long start = System.currentTimeMillis();
         retrievePropertyTable();
         retreiveSourceCodesMap();
 
@@ -55,7 +55,7 @@ public class LMSSourceDescSDASQLGenereator extends SQLGeneratorBase implements S
 
         for (Integer key : statements.keySet()) {
             String stmt = statements.get(key);
-            executor.execute(new ConcurrentInsert(key, stmt, connection));
+            executor.execute(new ConcurrentInsert(key, stmt, connection, start));
         }
     }
 

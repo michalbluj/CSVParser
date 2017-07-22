@@ -24,7 +24,7 @@ public class CustomerControlSegmentsSQLGenerator extends SQLGeneratorBase implem
     private static final String SEPARATOR = ",";
 
     public void insertRecordsToDatabase() throws Exception {
-
+    	Long start = System.currentTimeMillis();
         retrievePropertyTable();
 
         CSVFormat csvFileFormat = CSVFormat.DEFAULT.withHeader(FILE_HEADER_MAPPING);
@@ -54,7 +54,7 @@ public class CustomerControlSegmentsSQLGenerator extends SQLGeneratorBase implem
 
         for (Integer key : statements.keySet()) {
             String stmt = statements.get(key);
-            executor.execute(new ConcurrentInsert(key, stmt, connection));
+            executor.execute(new ConcurrentInsert(key, stmt, connection, start));
         }
     }
 

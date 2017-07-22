@@ -18,6 +18,7 @@ import com.company.caesars.generator.util.AppLog;
 public class SQLGeneratorBase {
 
     protected Connection connection = getConnection();
+    protected Connection masterDBConnection = getConnection();
 
     protected final Map<String,String> campaignCodeKeyMap  = new HashMap<String, String>();
     protected final Map<String,String> campaignTypeKeyMap  = new HashMap<String, String>();
@@ -111,8 +112,6 @@ public class SQLGeneratorBase {
         }catch(ClassNotFoundException e) {
             e.printStackTrace();
         }
-
-
         Connection connection = null;
 
         try {
@@ -120,7 +119,6 @@ public class SQLGeneratorBase {
                     "jdbc:postgresql://ec2-34-230-227-133.compute-1.amazonaws.com/d25gl9kunlhbi?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
                     "u66apiaok6b04k",
                     "pccce3c86b585ea8c53a75a2e80404027492d842a19befaf80cf8215e095ecf8d");
-
             System.out.println("Connection established !");
         } catch (SQLException e) {
             e.printStackTrace();
@@ -131,24 +129,56 @@ public class SQLGeneratorBase {
     }
 
     public Connection getConnection(){
-
-        System.out.println("Establishing connection ...");
-
+    	return getConnectionFull1MasterDB();
+    }
+    
+    public Connection getConnectionFull1MasterDB() {
+    	loadConnectionDriver();
+    	try {
+			connection = DriverManager.getConnection(
+			        "jdbc:postgresql://ec2-52-201-189-170.compute-1.amazonaws.com/d6ch7lh545s6lr?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
+			        "u9je585fn3fp0v",
+			        "p895ece32af622f692a080dbf05680ae1f2d043ebf78d97da20f88ab6e4e7ec1d");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	return connection;
+    }
+  
+    public Connection getConnectionFull1TestDB() {
+    	loadConnectionDriver();
+    	Connection connection = null;
+    	
+    	//full1 - Test DB to reload - postgresql-infinite-17473
+    	try {
+			connection = DriverManager.getConnection(
+			        "jdbc:postgresql://ec2-34-193-5-151.compute-1.amazonaws.com/d76leb68vne82a?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
+			        "u6nfnvaum79gji",
+			        "p3a22dd0cec799a4134301cc3274417a602959c5edcb7fb8dfbfeb4bbe3deda3b");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	return connection;
+    }
+    
+    private void loadConnectionDriver() {
         try {
             Class.forName("org.postgresql.Driver");
         }catch(ClassNotFoundException e) {
             e.printStackTrace();
         }
-
+    }
+    
+    public Connection getConnection(String envName, String dbName){
+    
+        System.out.println("Establishing connection ...");
 
         Connection connection = null;
 
         try {
-        	//fulll
-        	connection = DriverManager.getConnection(
-                    "jdbc:postgresql://ec2-52-201-189-170.compute-1.amazonaws.com/d6ch7lh545s6lr?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
-                    "u9je585fn3fp0v",
-                    "p895ece32af622f692a080dbf05680ae1f2d043ebf78d97da20f88ab6e4e7ec1d");
+
         	
         	//other/ gold
         	/*connection = DriverManager.getConnection(
@@ -157,10 +187,10 @@ public class SQLGeneratorBase {
                     "p5322793c9de3855cbbfe6c8bc089160e79ae35199919a8ff1a92b393efa141dc");*/
         	
         	//sprint1 :: database
-            /*connection = DriverManager.getConnection(
+             connection = DriverManager.getConnection(
                     "jdbc:postgresql://ec2-50-16-46-227.compute-1.amazonaws.com/d1mb3cbiok048o?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
                     "u9377sb661ci7e",
-                    "p64fe9f36c631d0673d907028443bbce517d27531d0619125d0ba27b9d42a0e3a");*/
+                    "p64fe9f36c631d0673d907028443bbce517d27531d0619125d0ba27b9d42a0e3a");
 
             // QA1
             /*connection = DriverManager.getConnection(

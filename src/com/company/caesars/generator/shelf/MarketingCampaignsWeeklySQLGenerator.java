@@ -43,7 +43,7 @@ public class MarketingCampaignsWeeklySQLGenerator extends SQLGeneratorBase imple
     }
 
     public void insertRecordsToDatabase() throws Exception{
-
+    	Long start = System.currentTimeMillis();
         CSVFormat csvFileFormat = CSVFormat.DEFAULT.withHeader(FILE_HEADER_MAPPING);
 
 
@@ -80,7 +80,7 @@ public class MarketingCampaignsWeeklySQLGenerator extends SQLGeneratorBase imple
         for(Integer key : statements.keySet()) {
             String stmt = insertStatement + statements.get(key);
             stmt = stmt.substring(0, stmt.length() - 1);
-            executor.execute(new ConcurrentInsert(key, stmt, connection));
+            executor.execute(new ConcurrentInsert(key, stmt, connection, start));
         }
 
     }

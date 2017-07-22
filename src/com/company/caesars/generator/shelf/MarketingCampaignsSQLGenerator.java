@@ -268,7 +268,7 @@ public class MarketingCampaignsSQLGenerator extends SQLGeneratorBase implements 
     }
 
     public void insertRecordsToDatabase() throws Exception{
-
+    	Long start = System.currentTimeMillis();
         CSVFormat csvFileFormat = CSVFormat.DEFAULT.withHeader(FILE_HEADER_MAPPING);
 
         retrieveCampaignCodeTable();
@@ -307,7 +307,7 @@ public class MarketingCampaignsSQLGenerator extends SQLGeneratorBase implements 
         for(Integer key : statements.keySet()) {
             String stmt = insertStatement + statements.get(key);
             stmt = stmt.substring(0, stmt.length() - 1);
-            executor.execute(new ConcurrentInsert(key, stmt, connection));
+            executor.execute(new ConcurrentInsert(key, stmt, connection, start));
         }
 
     }

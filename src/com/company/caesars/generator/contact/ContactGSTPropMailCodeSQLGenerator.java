@@ -26,7 +26,7 @@ public class ContactGSTPropMailCodeSQLGenerator extends SQLGeneratorBase impleme
     private static final String SEPARATOR = ",";
 
     public void insertRecordsToDatabase() throws Exception{
-
+    	Long start = System.currentTimeMillis();
         retrieveMailCodeTable();
 
         CSVFormat csvFileFormat = CSVFormat.DEFAULT.withHeader(FILE_HEADER_MAPPING);
@@ -56,7 +56,7 @@ public class ContactGSTPropMailCodeSQLGenerator extends SQLGeneratorBase impleme
 
         for(Integer key : statements.keySet()) {
             String stmt = statements.get(key);
-            executor.execute(new ConcurrentInsert(key, stmt, connection));
+            executor.execute(new ConcurrentInsert(key, stmt, connection, start));
         }
     }
 

@@ -12,15 +12,17 @@ public class Main {
     	
     	ExecutorService executor = Executors.newFixedThreadPool(3);
     	
-    	ConcurrentProcessor proc1 = new ConcurrentProcessor(new ContactSQLGenerator("C://Users//Michal Bluj//Downloads//FullGuestFile/guest2__60.txt"));
-    	ConcurrentProcessor proc2 = new ConcurrentProcessor(new ContactSQLGenerator("C://Users//Michal Bluj//Downloads//FullGuestFile/guest2__63.txt"));
-    	ConcurrentProcessor proc3 = new ConcurrentProcessor(new ContactSQLGenerator("C://Users//Michal Bluj//Downloads//FullGuestFile/guest2__27.txt"));
+    	//ConcurrentProcessor proc1 = new ConcurrentProcessor(new ContactSQLGenerator("C://Users//Michal Bluj//Downloads//FullGuestFile/guest2__60.txt"));
+    	ConcurrentProcessor proc1 = new ConcurrentProcessor(new ContactSQLGenerator("data/devst.caesars.comTest2/2017-07-17_noCR/guest2__01.txt"));
+    	
+    	//ConcurrentProcessor proc2 = new ConcurrentProcessor(new ContactSQLGenerator("C://Users//Michal Bluj//Downloads//FullGuestFile/guest2__63.txt"));
+    	//ConcurrentProcessor proc3 = new ConcurrentProcessor(new ContactSQLGenerator("C://Users//Michal Bluj//Downloads//FullGuestFile/guest2__27.txt"));
     	
     	executor.execute(proc1);
-    	executor.execute(proc2);
-    	executor.execute(proc3);
+    	//executor.execute(proc2);
+    	//executor.execute(proc3);
     	
-    	
+    	//shutdown method will allow previously submitted tasks to execute before terminating
         executor.shutdown();
     	
     	

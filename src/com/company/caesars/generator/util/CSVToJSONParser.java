@@ -14,7 +14,8 @@ public class CSVToJSONParser {
         elements = header.split(",");
     }
 
-    public String getJson(CSVRecord record){
+    //public String getJson(CSVRecord record){
+    public String getJson(){
         String jsonString = "{";
         for(String element : elements){
             jsonString = jsonString + "\""+element +"\":\""+ record.get(element)+"\",";
@@ -22,5 +23,8 @@ public class CSVToJSONParser {
         jsonString = jsonString.substring(0,jsonString.length() - 1);
         return jsonString + "}";
     }
-
+    
+    public String toString(){
+    	return getJson();
+    }
 }
