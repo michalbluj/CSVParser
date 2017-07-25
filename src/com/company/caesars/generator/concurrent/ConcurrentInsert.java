@@ -12,11 +12,20 @@ public class ConcurrentInsert implements Runnable{
     private String statement;
     private Connection connection;
     private Integer key;
+    private Long start;
 
+    public ConcurrentInsert(Integer key, String statement, Connection connection, Long start){
+        this.statement = statement;
+        this.connection = connection;
+        this.key = key;
+        this.start = start;
+    }
+    
     public ConcurrentInsert(Integer key, String statement, Connection connection){
         this.statement = statement;
         this.connection = connection;
         this.key = key;
+        this.start = System.currentTimeMillis();
     }
 
     public void run(){
@@ -25,7 +34,7 @@ public class ConcurrentInsert implements Runnable{
             Statement st = connection.createStatement();
             st.executeUpdate(statement);
             st.close();
-            System.out.println("run finished " + key);
+            System.out.println("run finished " + key +" Time from start : " + (System.currentTimeMillis() - start));
         }catch(SQLException e){
             e.printStackTrace();
             return;

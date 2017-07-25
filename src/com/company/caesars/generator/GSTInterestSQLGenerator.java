@@ -27,7 +27,7 @@ public class GSTInterestSQLGenerator extends SQLGeneratorBase implements SQLGene
     public ObjectMapper mapper = new ObjectMapper();
 
     public void insertRecordsToDatabase() throws Exception {
-
+    	Long start = System.currentTimeMillis();
         CSVFormat csvFileFormat = CSVFormat.DEFAULT.withHeader(FILE_HEADER_MAPPING);
 
         FileReader fileReader = new FileReader(readFilePath);
@@ -55,7 +55,7 @@ public class GSTInterestSQLGenerator extends SQLGeneratorBase implements SQLGene
 
         for (Integer key : statements.keySet()) {
             String stmt = statements.get(key);
-            executor.execute(new ConcurrentInsert(key, stmt, connection));
+            executor.execute(new ConcurrentInsert(key, stmt, connection, start));
         }
     }
 

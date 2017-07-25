@@ -24,7 +24,7 @@ public class SourceCodeSQLGenerator extends SQLGeneratorBase implements SQLGener
     private static final String SEPARATOR = ",";
 
     public void insertRecordsToDatabase() throws Exception {
-
+    	Long start = System.currentTimeMillis();
         retrievePropertyTable();
 
         CSVFormat csvFileFormat = CSVFormat.DEFAULT.withHeader(FILE_HEADER_MAPPING);
@@ -56,7 +56,7 @@ public class SourceCodeSQLGenerator extends SQLGeneratorBase implements SQLGener
 
         for (Integer key : statements.keySet()) {
             String stmt = statements.get(key);
-            executor.execute(new ConcurrentInsert(key, stmt, connection));
+            executor.execute(new ConcurrentInsert(key, stmt, connection, start));
         }
     }
 

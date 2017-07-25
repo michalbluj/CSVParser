@@ -29,7 +29,7 @@ public class PropertyDescriptionSDASQLGenerator   extends SQLGeneratorBase imple
     Map<Integer, Connection> conPool = new HashMap<Integer, Connection>();
 
     public void insertRecordsToDatabase() throws Exception {
-
+    	Long start = System.currentTimeMillis();
         Integer numberOfWorkers = 10;
 
         ExecutorService executor = Executors.newFixedThreadPool(numberOfWorkers);
@@ -64,7 +64,7 @@ public class PropertyDescriptionSDASQLGenerator   extends SQLGeneratorBase imple
 
         for (Integer key : statements.keySet()) {
             String stmt = statements.get(key);
-            executor.execute(new ConcurrentInsert(key, stmt, conPool.get(key)));
+            executor.execute(new ConcurrentInsert(key, stmt, conPool.get(key), start));
         }
         executor.shutdown();
     }

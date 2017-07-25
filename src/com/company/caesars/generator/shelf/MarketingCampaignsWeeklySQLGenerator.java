@@ -35,8 +35,14 @@ public class MarketingCampaignsWeeklySQLGenerator extends SQLGeneratorBase imple
     }
 
     public void insertRecordsToDatabase() throws Exception{
+<<<<<<< HEAD
 
     	CSVFormat csvFileFormat =  CSVFormat.newFormat('|').withHeader(FILE_HEADER_MAPPING);
+=======
+    	Long start = System.currentTimeMillis();
+        CSVFormat csvFileFormat = CSVFormat.DEFAULT.withHeader(FILE_HEADER_MAPPING);
+
+>>>>>>> e815d979d24e9dfc61216beb313f67ddcef0d374
 
         retrieveCampaignCodeTable();
         retrieveCampaignTypeTable();
@@ -74,7 +80,7 @@ public class MarketingCampaignsWeeklySQLGenerator extends SQLGeneratorBase imple
         for(Integer key : statements.keySet()) {
             String stmt = insertStatement + statements.get(key);
             stmt = stmt.substring(0, stmt.length() - 1);
-            executor.execute(new ConcurrentInsert(key, stmt, connection));
+            executor.execute(new ConcurrentInsert(key, stmt, connection, start));
         }
 
     }
