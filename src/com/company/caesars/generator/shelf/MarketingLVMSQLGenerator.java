@@ -1,30 +1,28 @@
 package com.company.caesars.generator.shelf;
 
+import java.io.File;
+import java.io.FileReader;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Types;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 
 import com.company.caesars.generator.SQLGenerator;
 import com.company.caesars.generator.SQLGeneratorBase;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.PrintWriter;
-import java.sql.*;
-import java.text.NumberFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
-
 public class MarketingLVMSQLGenerator extends SQLGeneratorBase implements SQLGenerator {
-
-    private static final String SEPARATOR = "";
 
     private final NumberFormat nf = NumberFormat.getNumberInstance(Locale.US);
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     private String readFilePath = "C://Users//Michal Bluj//Desktop//US1127/marketing_lvm.csv";
-    private String writeFilePath = "/tmp/tempcsv.csv";
     private String insertStatement = "INSERT INTO caesars.marketing_lvm (" +
             "i_dmid,c_prop_market_cd_fk,c_prop_market_cd,d_campaign_score_dt,c_recency," +
             "i_days_since_last,c_frequency_tc_48,f_trip_cycle_48,c_frequency_tc_12,f_trip_cycle_12," +
@@ -45,7 +43,7 @@ public class MarketingLVMSQLGenerator extends SQLGeneratorBase implements SQLGen
             "i_cas_acct_blv,i_cas_acct_clv,i_cas_acct_flv,i_cas_acct_ilv,i_cas_acct_las,i_cas_acct_phv," +
             "i_cas_acct_plv,i_cas_acct_rlv,c_rep_id_blv,c_rep_id_clv,c_rep_id_flv,c_rep_id_ilv," +
             "c_rep_id_las,c_rep_id_phv,c_rep_id_plv,c_rep_id_rlv,i_nbr_trips_p_pm15,i_nbr_trips_p_pm24," +
-            "i_random_1,i_random_2,i_random_static_yr,LVM12moHV,LVM15moHV,LVM24moHV,Max_Exp_Date_SIN_12mo," +
+            "i_random_1,i_random_2,i_random_static_yr,LVM12mohv,LVM15mohv,LVM24mohv,Max_Exp_Date_SIN_12mo," +
             "Max_Exp_Date_INA_12mo,Max_Exp_Date_EXH_12mo,Probability_12mo,Predicted_Bucket_12mo," +
             "Max_Exp_Date_SIN_24mo,Max_Exp_Date_INA_24mo,Max_Exp_Date_EXH_24mo,Probability_24mo," +
             "Predicted_Bucket_24mo,c_credit_status_flag) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
@@ -55,19 +53,12 @@ public class MarketingLVMSQLGenerator extends SQLGeneratorBase implements SQLGen
     }
 
     public MarketingLVMSQLGenerator(String readFilePath) {
-    }
-
-    public MarketingLVMSQLGenerator(String readFilePath, String writeFilePath) {
-        this.readFilePath = readFilePath;
-        this.writeFilePath = writeFilePath;
+    	this.readFilePath = readFilePath;
     }
 
     private Integer getInt(String s) throws ParseException {
+    	if(s != null && s.trim().equals("")) return null;
         return isInvalid(s) ? null : nf.parse(s.trim()).intValue();
-    }
-
-    private Double getDouble(String s) throws ParseException {
-        return isInvalid(s) ? null : nf.parse(s.trim()).doubleValue();
     }
 
     private String getStr(String s) {
@@ -75,7 +66,13 @@ public class MarketingLVMSQLGenerator extends SQLGeneratorBase implements SQLGen
     }
 
     private Date getDate(String s) throws ParseException {
+    	if(s != null && s.trim().equals("")) return null;
         return isInvalid(s) ? null : new Date(dateFormat.parse(s.trim()).getTime());
+    }
+
+    private Long getLong(String s) throws ParseException {
+    	if(s != null && s.trim().equals("")) return null;
+        return isInvalid(s) ? null : nf.parse(s.trim()).longValue();
     }
 
     private boolean isInvalid(String s) {
@@ -83,10 +80,6 @@ public class MarketingLVMSQLGenerator extends SQLGeneratorBase implements SQLGen
             return true;
         }
         return "NULL".equals(s) || "?".equals(s) || "empty".equals(s);
-    }
-
-    private Long getLong(String s) throws ParseException {
-        return isInvalid(s) ? null : nf.parse(s.trim()).longValue();
     }
 
     public void insertRecordsToDatabase() throws Exception {
@@ -97,9 +90,10 @@ public class MarketingLVMSQLGenerator extends SQLGeneratorBase implements SQLGen
 
 
         FileReader fileReader = new FileReader(new File(readFilePath));
-        Iterable<CSVRecord> records = CSVFormat.EXCEL.withHeader().parse(fileReader);
-        //connection = getShelfConnection();
-        final int batchSize = 6000;
+        CSVFormat csvFileFormat =  CSVFormat.newFormat('|').withHeader();
+        Iterable<CSVRecord> records = csvFileFormat.parse(fileReader);
+        connection = getShelfConnection();
+        final int batchSize = 500;
         int count = 0;
         PSWrapper ps = new PSWrapper(connection.prepareStatement(insertStatement));
         for (CSVRecord record : records) {
@@ -204,19 +198,19 @@ public class MarketingLVMSQLGenerator extends SQLGeneratorBase implements SQLGen
             ps.setInt(98, getInt(record.get("i_random_1")));
             ps.setInt(99, getInt(record.get("i_random_2")));
             ps.setInt(100, getInt(record.get("i_random_static_yr")));
-            ps.setInt(101, getInt(record.get("LVM12moHV")));
-            ps.setInt(102, getInt(record.get("LVM15moHV")));
-            ps.setInt(103, getInt(record.get("LVM24moHV")));
-            ps.setInt(104, getInt(record.get("Max_Exp_Date_SIN_12mo")));
-            ps.setInt(105, getInt(record.get("Max_Exp_Date_INA_12mo")));
-            ps.setInt(106, getInt(record.get("Max_Exp_Date_EXH_12mo")));
-            ps.setInt(107, getInt(record.get("Probability_12mo")));
-            ps.setString(108, getStr(record.get("Predicted_Bucket_12mo")));
-            ps.setInt(109, getInt(record.get("Max_Exp_Date_SIN_24mo")));
-            ps.setInt(110, getInt(record.get("Max_Exp_Date_INA_24mo")));
-            ps.setInt(111, getInt(record.get("Max_Exp_Date_EXH_24mo")));
-            ps.setInt(112, getInt(record.get("Probability_24mo")));
-            ps.setString(113, getStr(record.get("Predicted_Bucket_24mo")));
+            ps.setInt(101, getInt(record.get("lvm12mohv")));
+            ps.setInt(102, getInt(record.get("lvm15mohv")));
+            ps.setInt(103, getInt(record.get("lvm24mohv")));
+            ps.setInt(104, getInt(record.get("max_exp_date_sin_12mo")));
+            ps.setInt(105, getInt(record.get("max_exp_date_ina_12mo")));
+            ps.setInt(106, getInt(record.get("max_exp_date_exh_12mo")));
+            ps.setInt(107, getInt(record.get("probability_12mo")));
+            ps.setString(108, getStr(record.get("predicted_bucket_12mo")));
+            ps.setInt(109, getInt(record.get("max_exp_date_sin_24mo")));
+            ps.setInt(110, getInt(record.get("max_exp_date_ina_24mo")));
+            ps.setInt(111, getInt(record.get("max_exp_date_exh_24mo")));
+            ps.setInt(112, getInt(record.get("probability_24mo")));
+            ps.setString(113, getStr(record.get("predicted_bucket_24mo")));
             ps.setString(114, getStr(record.get("c_credit_status_flag")));
             // add contact mapping
 

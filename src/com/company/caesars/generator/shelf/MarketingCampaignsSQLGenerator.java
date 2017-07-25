@@ -1,28 +1,20 @@
 package com.company.caesars.generator.shelf;
 
-import com.company.caesars.generator.SQLGenerator;
-import com.company.caesars.generator.SQLGeneratorBase;
-import com.company.caesars.generator.concurrent.ConcurrentInsert;
-import com.company.caesars.generator.concurrent.SQLInsertExecutor;
+import java.io.FileReader;
+import java.sql.Connection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.PrintWriter;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Executor;
-import java.util.stream.Stream;
+import com.company.caesars.generator.SQLGenerator;
+import com.company.caesars.generator.SQLGeneratorBase;
+import com.company.caesars.generator.concurrent.ConcurrentInsert;
 
 /**
  * Created by Michal Bluj on 2017-06-22.
@@ -35,7 +27,6 @@ public class MarketingCampaignsSQLGenerator extends SQLGeneratorBase implements 
     private static final String SEPARATOR = ",";
 
     private String readFilePath = "C://Users//Michal Bluj//Desktop//US1127/marketing_campaigns.csv";
-    private String writeFilePath = "C://Users//Michal Bluj//Downloads//UCR - marketing_campaigns/marketing campaigns insert.txt";
     private String insertStatement = "INSERT INTO caesars.marketing_campaigns (" +
             "i_dmid," +
             "c_campaign_type_fk," +
@@ -259,17 +250,26 @@ public class MarketingCampaignsSQLGenerator extends SQLGeneratorBase implements 
             "i_email_decile,contact) VALUES";
 
     public MarketingCampaignsSQLGenerator(){}
+    
+    private static Map<Integer, Connection> conPool = new HashMap<Integer, Connection>();
 
-    public MarketingCampaignsSQLGenerator(String readFilePath){}
-
-    public MarketingCampaignsSQLGenerator(String readFilePath, String writeFilePath){
-        this.readFilePath = readFilePath;
-        this.writeFilePath = writeFilePath;
+    public MarketingCampaignsSQLGenerator(String readFilePath){
+    	this.readFilePath = readFilePath;
     }
-
+    
+    public void setupConnectionPool(Integer connectionPool){
+    	if(conPool.keySet().isEmpty()){
+	    	for (Integer i = 0; i < connectionPool; i++) { // initialize connection pool
+	            conPool.put(i, getShelfConnection());
+	        }
+    	}
+    }
+    
     public void insertRecordsToDatabase() throws Exception{
 
-        CSVFormat csvFileFormat = CSVFormat.DEFAULT.withHeader(FILE_HEADER_MAPPING);
+    	System.out.println("Parsing " + readFilePath);
+    	
+    	CSVFormat csvFileFormat =  CSVFormat.newFormat('|').withHeader(FILE_HEADER_MAPPING);
 
         retrieveCampaignCodeTable();
         retrieveCampaignTypeTable();
@@ -277,15 +277,18 @@ public class MarketingCampaignsSQLGenerator extends SQLGeneratorBase implements 
         retrieveTierCodeTable();
         retrieveMarketTable();
         retrieveAccountTypeCodeTable();
-        //retrieveContactTable();
 
         FileReader fileReader = new FileReader(readFilePath);
 
         CSVParser csvFileParser = new CSVParser(fileReader, csvFileFormat);
 
         List<CSVRecord> csvRecords = csvFileParser.getRecords();
+        
+        Integer connectionPool = 50;
 
-        Integer numberOfWorkers = 500;
+        Integer numberOfWorkers = 1000;
+        
+        ExecutorService executor = Executors.newFixedThreadPool(connectionPool);
 
         Map<Integer,String> statements = new HashMap<Integer,String>();
         for(Integer i = 0; i< numberOfWorkers ;i++){
@@ -298,18 +301,22 @@ public class MarketingCampaignsSQLGenerator extends SQLGeneratorBase implements 
             String generatedLine = generateInsertLine(record);
             statements.put(counter % numberOfWorkers, statements.get(counter % numberOfWorkers) + generatedLine);
             counter ++;
+            System.out.println(counter);
         }
+        
+        csvFileParser.close();
 
-        Executor executor = new SQLInsertExecutor();
-
+        setupConnectionPool(connectionPool);
+        
         //connection = getShelfConnection();
 
         for(Integer key : statements.keySet()) {
             String stmt = insertStatement + statements.get(key);
             stmt = stmt.substring(0, stmt.length() - 1);
-            executor.execute(new ConcurrentInsert(key, stmt, connection));
+            executor.execute(new ConcurrentInsert(key, stmt, conPool.get(key%connectionPool)));
         }
-
+       
+        executor.shutdown();
     }
 
     private String generateInsertLine(CSVRecord record) {

@@ -145,10 +145,10 @@ public class SQLGeneratorBase {
 
         try {
         	//fulll
-        	connection = DriverManager.getConnection(
+        	/*connection = DriverManager.getConnection(
                     "jdbc:postgresql://ec2-52-201-189-170.compute-1.amazonaws.com/d6ch7lh545s6lr?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
                     "u9je585fn3fp0v",
-                    "p895ece32af622f692a080dbf05680ae1f2d043ebf78d97da20f88ab6e4e7ec1d");
+                    "p895ece32af622f692a080dbf05680ae1f2d043ebf78d97da20f88ab6e4e7ec1d");*/
         	
         	//other/ gold
         	/*connection = DriverManager.getConnection(
@@ -157,10 +157,10 @@ public class SQLGeneratorBase {
                     "p5322793c9de3855cbbfe6c8bc089160e79ae35199919a8ff1a92b393efa141dc");*/
         	
         	//sprint1 :: database
-            /*connection = DriverManager.getConnection(
+        	connection = DriverManager.getConnection(
                     "jdbc:postgresql://ec2-50-16-46-227.compute-1.amazonaws.com/d1mb3cbiok048o?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
                     "u9377sb661ci7e",
-                    "p64fe9f36c631d0673d907028443bbce517d27531d0619125d0ba27b9d42a0e3a");*/
+                    "p64fe9f36c631d0673d907028443bbce517d27531d0619125d0ba27b9d42a0e3a");
 
             // QA1
             /*connection = DriverManager.getConnection(

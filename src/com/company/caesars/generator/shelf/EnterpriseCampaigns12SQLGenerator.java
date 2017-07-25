@@ -18,7 +18,7 @@ import java.util.concurrent.Executors;
 /**
  * Created by Michal Bluj on 2017-07-07.
  */
-public class EnterpriseCampaignsSQLGenerator  extends SQLGeneratorBase implements SQLGenerator {
+public class EnterpriseCampaigns12SQLGenerator  extends SQLGeneratorBase implements SQLGenerator {
 
     private String readFilePath = "C://Users//Michal Bluj//Desktop/vedw.gst_market_sum_24mo_view.csv";
 
@@ -26,8 +26,7 @@ public class EnterpriseCampaignsSQLGenerator  extends SQLGeneratorBase implement
 
     private static final String SEPARATOR = ",";
 
-    
-    public EnterpriseCampaignsSQLGenerator(String file){
+    public EnterpriseCampaigns12SQLGenerator(String file){
     	readFilePath = file;
     }
 
@@ -77,7 +76,7 @@ public class EnterpriseCampaignsSQLGenerator  extends SQLGeneratorBase implement
     }
 
     private String generateInsertLine(CSVRecord record) {
-        return "Insert into caesars.enterprise_campaign (i_dmid,i_pdb_trips_all_mkts,i_pdb_rated_trips_all_mkts,i_cms_rated_trips_all_mkts,i_all_days_all_mkts,i_rated_days_all_mkts,f_theo_all_all_mkts,f_actual_all_all_mkts,i_hotel_trips_all_mkts,i_offer_trips_all_mkts,i_minutes_all_mkts,f_mdw_rated_all_mkts,f_mdw_all_all_mkts) VALUES (" +
+        return "Insert into caesars.enterprise_campaign_12 (i_dmid,i_pdb_trips_all_mkts,i_pdb_rated_trips_all_mkts,i_cms_rated_trips_all_mkts,i_all_days_all_mkts,i_rated_days_all_mkts,f_theo_all_all_mkts,f_actual_all_all_mkts,i_hotel_trips_all_mkts,i_offer_trips_all_mkts,i_minutes_all_mkts,f_mdw_rated_all_mkts,f_mdw_all_all_mkts) VALUES (" +
                 addStringValue(record.get("i_dmid")) + SEPARATOR +
                 addNumericValue(record.get("i_pdb_trips_all_mkts")) + SEPARATOR +
                         addNumericValue(record.get("i_pdb_rated_trips_all_mkts")) + SEPARATOR +

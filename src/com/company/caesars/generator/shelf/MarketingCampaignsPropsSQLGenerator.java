@@ -25,7 +25,7 @@ public class MarketingCampaignsPropsSQLGenerator extends SQLGeneratorBase implem
     private final NumberFormat nf = NumberFormat.getNumberInstance(Locale.US);
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-    private String readFilePath = "C://Users//Michal Bluj//Desktop//US1127/marketing_campaigns_prop.csv";
+    private String readFilePath = "D://Caesars//marketing_campaigns_prop_split/marketing_campaigns_prop__01-000.txt";
 
     private final String insertStatement = "INSERT INTO caesars.marketing_campaigns_properties " +
             "(i_dmid, c_campaign_type,c_campaign_type_desc,c_campaign_cd_fk,c_campaign_desc,d_campaign_score_dt," +
@@ -76,6 +76,7 @@ public class MarketingCampaignsPropsSQLGenerator extends SQLGeneratorBase implem
     }
 
     public MarketingCampaignsPropsSQLGenerator(String readFilePath) {
+    	this.readFilePath = readFilePath;
     }
 
     public MarketingCampaignsPropsSQLGenerator(String readFilePath, String writeFilePath) {
@@ -84,6 +85,7 @@ public class MarketingCampaignsPropsSQLGenerator extends SQLGeneratorBase implem
     }
 
     private Integer getInt(String s) throws ParseException {
+    	if(s != null && s.trim().equals("")) return null;
         return isInvalid(s) ? null : nf.parse(s.trim()).intValue();
     }
 
@@ -96,10 +98,12 @@ public class MarketingCampaignsPropsSQLGenerator extends SQLGeneratorBase implem
     }
 
     private Date getDate(String s) throws ParseException {
+    	if(s != null && s.trim().equals("")) return null;
         return isInvalid(s) ? null : new Date(dateFormat.parse(s.trim()).getTime());
     }
 
     private Long getLong(String s) throws ParseException {
+    	if(s != null && s.trim().equals("")) return null;
         return isInvalid(s) ? null : nf.parse(s.trim()).longValue();
     }
 
@@ -120,9 +124,10 @@ public class MarketingCampaignsPropsSQLGenerator extends SQLGeneratorBase implem
         retrieveAccountTypeCodeTable();
 
         FileReader fileReader = new FileReader(new File(readFilePath));
-        Iterable<CSVRecord> records = CSVFormat.EXCEL.withHeader().parse(fileReader);
-        //connection = getShelfConnection();
-        final int batchSize = 6000;
+        CSVFormat csvFileFormat =  CSVFormat.newFormat('|').withHeader();
+        Iterable<CSVRecord> records = csvFileFormat.parse(fileReader);
+        connection = getShelfConnection();
+        final int batchSize = 500;
         int count = 0;
         PSWrapper ps = new PSWrapper(connection.prepareStatement(insertStatement));
         for (CSVRecord record : records) {
