@@ -10,7 +10,7 @@ public class FileDecryptor {
 
 	public static void main(String[] args) throws IOException {
 
-		///Users/blau/git/CSVParser/data/2017-07-21/gst_activity_ftd.zip.pgp
+		///blauHome/Caesars/data/GuestPreference/gst_tier.zip.pgp
 		InputStream in = new FileInputStream("data/2017-07-21/marketing_lvm.zip.pgp");
 		OutputStream out = new FileOutputStream("data/2017-07-21/marketing_lvm.zip");
 		
