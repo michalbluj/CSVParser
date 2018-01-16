@@ -163,6 +163,22 @@ public class SQLGeneratorBase {
     	return connection;
     }
     
+    public Connection getConnectionReporterDB () {
+    	loadConnectionDriver();
+    	Connection connection = null;
+    	postgres://udujh613ev8vp2:pba2be715762b4c5fc498aa21646ea41e5e7eabcc0777bae096859042c0400ba1@ec2-34-239-4-205.compute-1.amazonaws.com:5432/d8i2atciefrqtp
+    	try {
+			connection = DriverManager.getConnection(
+			        "jdbc:postgresql://ec2-34-239-4-205.compute-1.amazonaws.com/d8i2atciefrqtp?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
+			        "udujh613ev8vp2",
+			        "pba2be715762b4c5fc498aa21646ea41e5e7eabcc0777bae096859042c0400ba1");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	return connection;
+    }
+    
     private void loadConnectionDriver() {
         try {
             Class.forName("org.postgresql.Driver");

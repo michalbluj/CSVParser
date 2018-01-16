@@ -11,11 +11,11 @@ public class FileDecryptor {
 	public static void main(String[] args) throws IOException {
 
 		///blauHome/Caesars/data/GuestPreference/gst_tier.zip.pgp
-		InputStream in = new FileInputStream("data/2017-07-21/marketing_lvm.zip.pgp");
-		OutputStream out = new FileOutputStream("data/2017-07-21/marketing_lvm.zip");
+		InputStream in = new FileInputStream("C:/Users/Micha³ Bluj/Desktop/prop_desc_sda.ENT_ALL_103_171211000008410002.gz.pgp");
+		OutputStream out = new FileOutputStream("C:/Users/Micha³ Bluj/Desktop/prop_desc_sda.ENT_ALL_103_171211000008410002.gz");
 		
-		System.out.println("Decrypting "+"data/2017-07-21/marketing_lvm.zip.pgp");
-		InputStream keyIn = new FileInputStream("data/sample/private.asc");
+		
+		InputStream keyIn = new FileInputStream("keys/PGP/st/private.asc");
 		//InputStream keyIn = new FileInputStream("keys/PGP/devst/privateDev.asc");
 		
 		char[] password = "Ri0Vegas!".toCharArray();	

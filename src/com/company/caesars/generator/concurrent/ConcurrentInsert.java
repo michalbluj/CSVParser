@@ -34,7 +34,7 @@ public class ConcurrentInsert implements Runnable{
             Statement st = connection.createStatement();
             st.executeUpdate(statement);
             st.close();
-            System.out.println("run finished " + key +" Time from start : " + (System.currentTimeMillis() - start));
+            //System.out.println("run finished " + key +" Time from start : " + (System.currentTimeMillis() - start));
         }catch(SQLException e){
             e.printStackTrace();
             return;

@@ -1,23 +1,22 @@
 package com.company.caesars;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import com.company.caesars.generator.concurrent.ConcurrentProcessor;
-import com.company.caesars.generator.shelf.EnterpriseCampaigns12SQLGenerator;
+import com.company.caesars.generator.WinetIdSQLGenerator;
 
 public class Main {
 
     public static void main(String[] args) throws Exception {
     	
-    	ExecutorService executor = Executors.newFixedThreadPool(1);
+    	WinetIdSQLGenerator generator = new WinetIdSQLGenerator();
+    	generator.insertRecordsToDatabase();
+    	
+    	/*ExecutorService executor = Executors.newFixedThreadPool(1);
     	
     	ConcurrentProcessor proc1 = new ConcurrentProcessor(new EnterpriseCampaigns12SQLGenerator("D://Caesars/gst_market_sum_12mo_view-005.txt"));
     	ConcurrentProcessor proc2 = new ConcurrentProcessor(new EnterpriseCampaigns12SQLGenerator("D://Caesars/gst_market_sum_12mo_view-006.txt"));
     	ConcurrentProcessor proc3 = new ConcurrentProcessor(new EnterpriseCampaigns12SQLGenerator("D://Caesars/gst_market_sum_12mo_view-007.txt"));
     	ConcurrentProcessor proc4 = new ConcurrentProcessor(new EnterpriseCampaigns12SQLGenerator("D://Caesars/gst_market_sum_12mo_view-008.txt"));
     	ConcurrentProcessor proc5 = new ConcurrentProcessor(new EnterpriseCampaigns12SQLGenerator("D://Caesars/gst_market_sum_12mo_view-009.txt"));
-    	
+    	*/
     	
     	//ConcurrentProcessor proc5 = new ConcurrentProcessor(new EnterpriseCampaignsSQLGenerator("D://Caesars/gst_market_sum_24mo_view-016.txt"));
     	/*ConcurrentProcessor proc2 = new ConcurrentProcessor(new MarketingLVMSQLGenerator("D://Caesars//marketing_lvm_split/marketing_lvm__82.txt"));
@@ -53,11 +52,11 @@ public class Main {
     	ConcurrentProcessor proc19 = new ConcurrentProcessor(new MarketingCampaignsSQLGenerator("D://Caesars//marketing_campaigns_split//marketing_cmapaigns_split/marketing_campaigns__26-003.txt"));
     	ConcurrentProcessor proc20 = new ConcurrentProcessor(new MarketingCampaignsSQLGenerator("D://Caesars//marketing_campaigns_split//marketing_cmapaigns_split/marketing_campaigns__26-004.txt"));
     	*/
-    	executor.execute(proc1);
+    	/*executor.execute(proc1);
     	executor.execute(proc2);
     	executor.execute(proc3);
     	executor.execute(proc4);
-    	executor.execute(proc5);
+    	executor.execute(proc5);*/
     	
     	/*executor.execute(proc6);
     	executor.execute(proc7);
@@ -75,7 +74,7 @@ public class Main {
     	executor.execute(proc17);
     	executor.execute(proc18);*/
     	
-        executor.shutdown();
+        //executor.shutdown();
     	
         /*SQLGenerator generator = new ContactSQLGenerator(); // place generator implementation here.
         try {
